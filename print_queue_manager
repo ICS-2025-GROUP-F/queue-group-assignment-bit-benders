@@ -46,3 +46,4 @@ class PrintQueueManager:
             for job in self.queue:
                 wait_time = self.current_time - job['submitted_at']
                 print(f" - Job {job['job_id']} | User: {job['user_id']} | Priority: {job['priority']} | Waiting: {wait_time}")
+
