@@ -1,0 +1,49 @@
+class PrintQueueManager:
+    def __init__(self, expiry_time=10):
+        self.queue = []  # List of job dictionaries
+        self.expiry_time = expiry_time  # Max ticks a job can wait
+        self.current_time = 0  # Tick counter
+
+    def enqueue_job(self, user_id, job_id, priority):
+        job = {
+            'user_id': user_id,
+            'job_id': job_id,
+            'priority': priority,
+            'submitted_at': self.current_time
+        }
+        self.queue.append(job)
+        print(f"✅ Job {job_id} submitted by {user_id} with priority {priority}.")
+
+    def tick(self):
+        self.current_time += 1
+        print(f"\n⏱️ Tick: {self.current_time}")
+        self.remove_expired_jobs()
+
+    def remove_expired_jobs(self):
+        """
+        Removes jobs that have been in the queue longer than expiry_time.
+        """
+        expired_jobs = []
+        updated_queue = []
+
+        for job in self.queue:
+            waiting_time = self.current_time - job['submitted_at']
+            if waiting_time > self.expiry_time:
+                expired_jobs.append(job)
+            else:
+                updated_queue.append(job)
+
+        self.queue = updated_queue
+
+        for job in expired_jobs:
+            print(f"❌ Job {job['job_id']} from User {job['user_id']} expired after {waiting_time} ticks.")
+
+    def show_status(self):
+        if not self.queue:
+            print("📭 Queue is empty.")
+        else:
+            print("🖨️ Queue Status:")
+            for job in self.queue:
+                wait_time = self.current_time - job['submitted_at']
+                print(f" - Job {job['job_id']} | User: {job['user_id']} | Priority: {job['priority']} | Waiting: {wait_time}")
+
